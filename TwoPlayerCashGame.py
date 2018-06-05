@@ -22,23 +22,15 @@ class TwoPlayerCashGame:
                                          35: 'Short Line', 36: 'Chance 3', 37: 'Park Place', 38: 'Luxury Tax',
                                          39: 'Boardwalk'
                                          }
-        self.propertyValues = {0: 0, 1: 60, 2: 0, 3: 60, 4: -200,
-                               5: 200, 6: 100, 7: 0, 8: 100, 9: 120,
-                               10: 0, 11: 140, 12: 150, 13: 140, 14: 160, 15: 200,
-                               16: 180, 17: 0, 18: 180, 19: 200, 20: 0,
-                               21: 220, 22: 0, 23: 220, 24: 240, 25: 200,
-                               26: 260, 27: 260, 28: 150, 29: 280, 30: 0,
-                               31: 300, 32: 300, 33: 0, 34: 320,
-                               35: 200, 36: 0, 37: 350, 38: -100, 39: 400
-                               }
-        self.propertyOwner = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0,
-                              5: 0, 6: 0, 7: 0, 8: 0, 9: 0,
-                              10: 0, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0,
-                              16: 0, 17: 0, 18: 0, 19: 0, 20: 0,
-                              21: 0, 22: 0, 23: 0, 24: 0, 25: 0,
-                              26: 0, 27: 0, 28: 0, 29: 0, 30: 0,
-                              31: 0, 32: 0, 33: 0, 34: 0,
-                              35: 0, 36: 0, 37: 0, 38: 0, 39: 0
+
+        self.propertyOwner = {0: -1, 1: 0, 2: -1, 3: 0, 4: -1,
+                              5: 0, 6: 0, 7: -1, 8: 0, 9: 0,
+                              10: -1, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0,
+                              16: 0, 17: -1, 18: 0, 19: 0, 20: -1,
+                              21: 0, 22: -1, 23: 0, 24: 0, 25: 0,
+                              26: 0, 27: 0, 28: 0, 29: 0, 30: -1,
+                              31: 0, 32: 0, 33: -1, 34: 0,
+                              35: 0, 36: -1, 37: 0, 38: -1, 39: 0
                               }
         self.chanceCards = {0: 'Advance to Go', 1: 'Advance to Illinois Ave', 2: 'Advance to St.Charles Place',
                             3: 'Advance to nearest Utility',
@@ -65,16 +57,20 @@ class TwoPlayerCashGame:
     def drawChanceCard(self, player):
         drawCard = random.random()
         if drawCard <= 0.0624:
+            print('Chance: Go to Go Collect $200 Player ' + str(player.ID))
             player.location = 0
             player.cash += 200
         elif drawCard <= 0.125:
             # print('Chance card: Go to Illinois Avenue')
+            print('Chance: Go to Illinois Avenue Player ' + str(player.ID))
             player.location = 24
         elif drawCard <= 0.1875:
             # print('Chance card: Go to St.Charles Place')
+            print('Chance: Go to St.Charles Place Player ' + str(player.ID))
             player.location = 11
         elif drawCard <= 0.25:
             # print('Chance card: Go to nearest Utility')
+            print('Chance: Go to nearest Utility Player ' + str(player.ID))
             if player.location <= 12:
                 player.location = self.electricCompanyLocation
             elif player.location <= 28:
@@ -83,6 +79,7 @@ class TwoPlayerCashGame:
                 player.location = self.electricCompanyLocation
         elif drawCard <= 0.3125:
             # print('Chance card: Go to nearest Railroad')
+            print('Chance: Go to nearest railroad Player ' + str(player.ID))
             if player.location <= 5:
                 player.location = 5
             elif player.location <= 15:
@@ -94,34 +91,42 @@ class TwoPlayerCashGame:
             else:
                 player.location = 5
         elif drawCard <= 0.375:
+            print('Chance: collect $50 Player ' + str(player.ID))
             player.cash +=50
         elif drawCard <= 0.4375:
             # get out of jail free
             pass
         elif drawCard <= 0.5:
             # print('Chance card: Go back 3 space')
+            print('Chance: Go back 3 spaces Player ' + str(player.ID))
             player.location -=3
         elif drawCard <= 0.5625:
             # print('Chance card: Go to Jail')
+            print('Chance: Go to Jail Player ' + str(player.ID))
             player.location = 10
             player.inJail = True
         elif drawCard <= 0.625:
             #for each house pay 25 for each hotel pay 100
             pass
         elif drawCard <= 0.75:
+            print('Chance: pay $15 Player ' + str(player.ID))
             player.cash -= 15
             pass
         elif drawCard <= 0.8125:
             # print('Chance card: Go to Reading Railroad')
+            print('Chance: Go to Reading Railroad Player ' + str(player.ID))
             player.location = 5
         elif drawCard <= 0.875:
             # print('Chance card: Go to BoardWalk')
+            print('Chance: Go to Boardwalk Player ' + str(player.ID))
             player.location = 39
         elif drawCard <= 0.9375:
             # collect 150
+            print('Chance: Go collect $150 Player ' + str(player.ID))
             player.cash += 150
         elif drawCard <= 1:
             # collect 100
+            print('Chance: Go collect $100 Player ' + str(player.ID))
             player.cash += 100
         else:
             pass
@@ -129,54 +134,56 @@ class TwoPlayerCashGame:
     def communityChestCard(self, player):
         drawCard = random.random()
         if drawCard <= 0.0626:
-            # print('Chance card: Go to Go')
+            print('Community Chest: Go to Go Player ' + str(player.ID))
             player.location = 0
             player.cash += 200
         elif drawCard <= 0.125:
-            # print('Chance card: Go to Jail')
+            print('Community Chest: Go to Jail Player ' + str(player.ID))
             player.location = 10
             player.inJail = True
         elif drawCard <= 0.1875:
             # Collect $200
+            print('Community Chest: collect $200 Player ' + str(player.ID))
             player.cash += 200
         elif drawCard <= 0.25:
-            # Pay 50
+            print('Community Chest: pay $50 Player ' + str(player.ID))
             player.cash -= 50
         elif drawCard <= 0.3125:
             # Get 50
+            print('Community Chest: collect $50 Player ' + str(player.ID))
             player.cash += 50
         elif drawCard <= 0.375:
             # Get out of jail free
             pass
         elif drawCard <= 0.4375:
-            # Get 50
+            print('Community Chest: collect $50 Player ' + str(player.ID))
             player.cash += 50
         elif drawCard <= 0.5:
-            # Get 100
+            print('Community Chest: collect $100 Player ' + str(player.ID))
             player.cash += 100
         elif drawCard <= 0.5625:
-            # Get 20
+            print('Community Chest: collect $20 Player ' + str(player.ID))
             player.cash += 20
         elif drawCard <= 0.625:
-            # Get 10
+            print('Community Chest: collect $10 Player ' + str(player.ID))
             player.cash += 10
         elif drawCard <= 0.6875:
-            # Get 100
+            print('Community Chest: collect $100 Player ' + str(player.ID))
             player.cash += 100
         elif drawCard <= 0.75:
-            # Pay 150
+            print('Community Chest: pay $150 Player ' + str(player.ID))
             player.cash -= 150
         elif drawCard <= 0.8125:
-            # Get 25
+            print('Community Chest: collect $25 Player ' + str(player.ID))
             player.cash += 25
         elif drawCard <= 0.875:
             # Pay 40 X houses and 150 X hotels
             pass
         elif drawCard <= 0.9375:
-            # Get 10
+            print('Community Chest: collect $10 Player ' + str(player.ID))
             player.cash += 10
         elif drawCard <= 1:
-            # Get 100
+            print('Community Chest: collect $100 Player ' + str(player.ID))
             player.cash += 100
         else:
             pass
@@ -188,10 +195,14 @@ class TwoPlayerCashGame:
         if player.inJailNonDoubleRolls == 3:
             player.inJail = False
             player.cash -= 50
+            if player.cash <= 0:
+                player.tryToMortgageProperty(self.propertyOwner)
             player.inJailNonDoubleRolls = 0
         rollDice = RollDice(player.inJail)
         rollDice.rollDice()
         if player.inJail:
+            print('Player ' + str(player.ID) + ' is in Jail')
+
             if rollDice.leaveJail:
                 player.inJail = False
                 player.inJailNonDoubleRolls = 0
@@ -202,6 +213,7 @@ class TwoPlayerCashGame:
         currentRoll = rollDice.sum
         if currentRoll == -1:
             #  go to jail
+            print('Player ' + str(player.ID) + ' is going to jail for speeding')
             player.location = 10
             player.inJail = True
         elif player.location + currentRoll > 39:
@@ -215,6 +227,14 @@ class TwoPlayerCashGame:
             # print('Go to jail')
             player.location = 10
             player.inJail = True
+        elif player.location == 4:
+            player.cash -= 100
+            if player.cash <= 0:
+                player.tryToMortgageProperty(self.propertyOwner)
+        elif player.location == 38:
+            player.cash -= 200
+            if player.cash <= 0:
+                player.tryToMortgageProperty(self.propertyOwner)
         elif player.location == 7 or player.location  == 22 or player.location  == 36:
             #     Draw chance cards
             self.drawChanceCard(player)
@@ -222,21 +242,28 @@ class TwoPlayerCashGame:
             #     Draw community chest card
             self.communityChestCard(player)
         if player.cash < 1:
-            # see if you can morgage a property, sell assets or if not lose the game
-            pass
+            player.tryToMortgageProperty(self.propertyOwner)
 
 
     def simulateCashGame(self):
-            playerOne = Player()
-            playerTwo = Player()
-            while playerOne.cash > 0 and playerTwo.cash > 0:
+            playerOne = Player(1)
+            playerTwo = Player(2)
+            # while playerOne.cash > 0 and playerTwo.cash > 0:
+            for i in range(0, 100):
                 # take turns playing the game
                 self.takeTurn(playerOne)
+                print('player One turn ', self.boardLocationsKeyReverse[playerOne.location])
                 self.processLocation(playerOne, playerTwo)
                 self.takeTurn(playerTwo)
+                print('player Two turn ', self.boardLocationsKeyReverse[playerTwo.location])
+
                 self.processLocation(playerOne, playerTwo)
+            print(self.propertyOwner, playerOne.cash, playerTwo.cash)
 
     def processLocation(self, playerOne, playerTwo):
-        playerLocation = playerOne.location
+        # check the current owner of the property the player is on, if they own it do nothing if nobody owns it
+        # decide to either buy it or do nothing if the other player owns it pay rent
+        self.propertyOwner = playerOne.buyRentSell(self.propertyOwner, playerTwo)
 
-        return
+newGame = TwoPlayerCashGame()
+newGame.simulateCashGame()
