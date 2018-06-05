@@ -221,7 +221,9 @@ class TwoPlayerCashGame:
             while player.location  < 40:
                 player.location += 1
                 currentRoll -= 1
-                player.location = 0
+            print('Player ' + str(player.ID) + ' pass go collect $200 ' + str(player.cash))
+            player.cash +=200
+            player.location = 0
         player.location += currentRoll
         if player.location  == 30:
             # print('Go to jail')
@@ -249,21 +251,21 @@ class TwoPlayerCashGame:
             playerOne = Player(1)
             playerTwo = Player(2)
             # while playerOne.cash > 0 and playerTwo.cash > 0:
-            for i in range(0, 100):
+            for i in range(0, 1000):
                 # take turns playing the game
                 self.takeTurn(playerOne)
-                print('player One turn ', self.boardLocationsKeyReverse[playerOne.location])
-                self.processLocation(playerOne, playerTwo)
+                # print('player One turn ', self.boardLocationsKeyReverse[playerOne.location])
+                self.processLocation(playerOne, playerTwo, i)
                 self.takeTurn(playerTwo)
-                print('player Two turn ', self.boardLocationsKeyReverse[playerTwo.location])
+                # print('player Two turn ', self.boardLocationsKeyReverse[playerTwo.location])
 
-                self.processLocation(playerOne, playerTwo)
+                self.processLocation(playerTwo, playerOne, i)
             print(self.propertyOwner, playerOne.cash, playerTwo.cash)
 
-    def processLocation(self, playerOne, playerTwo):
+    def processLocation(self, playerOne, playerTwo, turn):
         # check the current owner of the property the player is on, if they own it do nothing if nobody owns it
         # decide to either buy it or do nothing if the other player owns it pay rent
-        self.propertyOwner = playerOne.buyRentSell(self.propertyOwner, playerTwo)
+        self.propertyOwner = playerOne.buyRentSell(self.propertyOwner, playerTwo, turn)
 
 newGame = TwoPlayerCashGame()
 newGame.simulateCashGame()

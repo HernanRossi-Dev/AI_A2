@@ -54,7 +54,7 @@ class Player:
                                }
 
     # Decide to buy or not or pay rent if it is owned by other player
-    def buyRentSell(self, propertyOwners, otherPlayer ):
+    def buyRentSell(self, propertyOwners, otherPlayer, turn):
         propertyCost = self.propertyValues[self.location]
         if propertyCost < 0:
             if self.cash + propertyCost < 0:
@@ -62,15 +62,17 @@ class Player:
         if propertyOwners[self.location] == 0:
         #     will I buy or not?
             randomChoice = random.random()
-            if randomChoice <= 0.5 and propertyCost < self.cash:
+            if randomChoice <= 0.75 and propertyCost < self.cash:
                 print('Player ' + str(self.ID) + ' buying ' + self.boardLocationsKeyReverse[self.location] + ' for ' + str(propertyCost))
-
                 self.cash = self.cash - propertyCost
                 print('Remaining cash ' + str(self.cash))
                 propertyOwners[self.location] = self.ID
         elif propertyOwners[self.location] == otherPlayer.ID:
         #     pay rent
-            rent = self.propertyRents[self.location]
+
+            rent = self.propertyRents[self.location] * turn
+            print('Player ' + str(self.ID) + ' paying ' + str(rent) + ' in rent ')
+            print('Player ' + str(self.ID) + ' has ' + str(self.cash) )
             if self.cash < rent:
                 propertyOwners = self.tryToMortgageProperty(propertyOwners)
         return propertyOwners
@@ -85,5 +87,5 @@ class Player:
                 if self.cash > 0:
                     return propertyOwners
 
-        print('Player ' + self.ID + ' has run out of money and has lost the game')
+        print('Player ' + str(self.ID) + ' has run out of money and has lost the game')
         exit(0)
