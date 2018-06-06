@@ -1,4 +1,5 @@
 import random
+import math
 class Player:
     def __init__(self, newID):
         self.cash = 500
@@ -58,34 +59,36 @@ class Player:
         propertyCost = self.propertyValues[self.location]
         if propertyCost < 0:
             if self.cash + propertyCost < 0:
-                propertyOwners = self.tryToMortgageProperty(propertyOwners)
+                propertyOwners = self.tryToMortgageProperty(propertyOwners, turn)
         if propertyOwners[self.location] == 0:
         #     will I buy or not?
             randomChoice = random.random()
-            if randomChoice <= 0.75 and propertyCost < self.cash:
+            if randomChoice <= 0.85 and propertyCost < self.cash:
                 print('Player ' + str(self.ID) + ' buying ' + self.boardLocationsKeyReverse[self.location] + ' for ' + str(propertyCost))
                 self.cash = self.cash - propertyCost
                 print('Remaining cash ' + str(self.cash))
                 propertyOwners[self.location] = self.ID
         elif propertyOwners[self.location] == otherPlayer.ID:
         #     pay rent
-
-            rent = self.propertyRents[self.location] * turn
+            rent = self.propertyRents[self.location] * turn/(math.sqrt(turn) * 0.110)
             print('Player ' + str(self.ID) + ' paying ' + str(rent) + ' in rent ')
             print('Player ' + str(self.ID) + ' has ' + str(self.cash) )
-            if self.cash < rent:
-                propertyOwners = self.tryToMortgageProperty(propertyOwners)
+            self.cash -= rent
+            if self.cash < 1:
+                print('Player ' + str(self.ID) + ' will try to mortgage their properties')
+                propertyOwners = self.tryToMortgageProperty(propertyOwners, turn)
         return propertyOwners
 
     # Try to mortgage enough to pay debts if not lose the game
-    def tryToMortgageProperty(self, propertyOwners):
-        # TODO
+    def tryToMortgageProperty(self, propertyOwners, turn):
+        # print(propertyOwners)
         for curProperty in propertyOwners:
             if propertyOwners[curProperty] == self.ID:
                 self.cash += self.propertyValues[curProperty]
                 propertyOwners[curProperty] = 0
+                print('Player ' + str(self.ID) + ' sold ' + self.boardLocationsKeyReverse[curProperty])
                 if self.cash > 0:
                     return propertyOwners
 
-        print('Player ' + str(self.ID) + ' has run out of money and has lost the game')
+        print('Player ' + str(self.ID) + ' has run out of money and has lost the game on turn ' + str(turn))
         exit(0)

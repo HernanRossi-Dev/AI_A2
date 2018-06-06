@@ -53,6 +53,7 @@ class TwoPlayerCashGame:
         self.electricCompanyLocation = 12
         self.waterWorksLocation = 28
         self.jailLocation = 10
+        self.turn = 0
 
     def drawChanceCard(self, player):
         drawCard = random.random()
@@ -148,6 +149,9 @@ class TwoPlayerCashGame:
         elif drawCard <= 0.25:
             print('Community Chest: pay $50 Player ' + str(player.ID))
             player.cash -= 50
+            if player.cash <= 0:
+                print('Player ' + str(player.ID) + ' must pay $50 but cant afford it try to mortgage properties.')
+                player.tryToMortgageProperty(self.propertyOwner, self.turn)
         elif drawCard <= 0.3125:
             # Get 50
             print('Community Chest: collect $50 Player ' + str(player.ID))
@@ -173,6 +177,9 @@ class TwoPlayerCashGame:
         elif drawCard <= 0.75:
             print('Community Chest: pay $150 Player ' + str(player.ID))
             player.cash -= 150
+            if player.cash <= 0:
+                print('Player ' + str(player.ID) + ' must pay $150 but cant afford it try to mortgage properties.')
+                player.tryToMortgageProperty(self.propertyOwner, self.turn)
         elif drawCard <= 0.8125:
             print('Community Chest: collect $25 Player ' + str(player.ID))
             player.cash += 25
@@ -196,7 +203,7 @@ class TwoPlayerCashGame:
             player.inJail = False
             player.cash -= 50
             if player.cash <= 0:
-                player.tryToMortgageProperty(self.propertyOwner)
+                player.tryToMortgageProperty(self.propertyOwner,  self.turn )
             player.inJailNonDoubleRolls = 0
         rollDice = RollDice(player.inJail)
         rollDice.rollDice()
@@ -232,11 +239,13 @@ class TwoPlayerCashGame:
         elif player.location == 4:
             player.cash -= 100
             if player.cash <= 0:
-                player.tryToMortgageProperty(self.propertyOwner)
+                print('Player ' + str(player.ID) + ' must pay $100 but cant afford it try to mortgage properties.')
+                player.tryToMortgageProperty(self.propertyOwner,  self.turn)
         elif player.location == 38:
             player.cash -= 200
             if player.cash <= 0:
-                player.tryToMortgageProperty(self.propertyOwner)
+                print('Player ' + str(player.ID) + ' must pay $200 but cant afford it try to mortgage properties.')
+                player.tryToMortgageProperty(self.propertyOwner,  self.turn)
         elif player.location == 7 or player.location  == 22 or player.location  == 36:
             #     Draw chance cards
             self.drawChanceCard(player)
@@ -244,7 +253,7 @@ class TwoPlayerCashGame:
             #     Draw community chest card
             self.communityChestCard(player)
         if player.cash < 1:
-            player.tryToMortgageProperty(self.propertyOwner)
+            player.tryToMortgageProperty(self.propertyOwner, self.turn)
 
 
     def simulateCashGame(self):
@@ -253,6 +262,7 @@ class TwoPlayerCashGame:
             # while playerOne.cash > 0 and playerTwo.cash > 0:
             for i in range(0, 1000):
                 # take turns playing the game
+                self.turn = i
                 self.takeTurn(playerOne)
                 # print('player One turn ', self.boardLocationsKeyReverse[playerOne.location])
                 self.processLocation(playerOne, playerTwo, i)
