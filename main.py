@@ -94,6 +94,7 @@ class assignmentTwoAI:
             self.currentPosition += currentRoll
             if self.currentPosition == 30:
                 # print('Go to jail')
+                self.boardLocationVisitedCount[self.currentPosition] += 1
                 self.currentPosition = 10
                 self.inJail = True
             elif self.currentPosition == 7 or self.currentPosition == 22 or self.currentPosition == 36:
@@ -110,9 +111,11 @@ class assignmentTwoAI:
     def drawChanceCard(self):
         drawCard = random.random()
         if drawCard <= 0.0625:
+            self.boardLocationVisitedCount[self.currentPosition] += 1
             # print('Chance card: Go to Go')
             self.currentPosition = 0
         elif drawCard <= 0.125:
+            self.boardLocationVisitedCount[self.currentPosition] += 1
             # print('Chance card: Go to Illinois Avenue')
             self.currentPosition = 24
         elif drawCard <= 0.1875:
@@ -120,6 +123,7 @@ class assignmentTwoAI:
             self.currentPosition = 11
         elif drawCard <= 0.25:
             # print('Chance card: Go to nearest Utility')
+            self.boardLocationVisitedCount[self.currentPosition] += 1
             if self.currentPosition <= 12:
                 self.currentPosition = self.electricCompanyLocation
             elif self.currentPosition <= 28:
@@ -127,6 +131,7 @@ class assignmentTwoAI:
             else:
                 self.currentPosition = self.electricCompanyLocation
         elif drawCard <= 0.3125:
+            self.boardLocationVisitedCount[self.currentPosition] += 1
             # print('Chance card: Go to nearest Railroad')
             if self.currentPosition <= 5:
                 self.currentPosition = 5
@@ -141,6 +146,7 @@ class assignmentTwoAI:
         elif drawCard <= 0.4375:
             pass
         elif drawCard <= 0.5:
+            self.boardLocationVisitedCount[self.currentPosition] += 1
             # print('Chance card: Go back 3 space')
             self.currentPosition -=3
         elif drawCard <= 0.5625:
@@ -150,9 +156,11 @@ class assignmentTwoAI:
             pass
         elif drawCard <= 0.8125:
             # print('Chance card: Go to Reading Railroad')
+            self.boardLocationVisitedCount[self.currentPosition] += 1
             self.currentPosition = 5
         elif drawCard <= 0.875:
             # print('Chance card: Go to BoardWalk')
+            self.boardLocationVisitedCount[self.currentPosition] += 1
             self.currentPosition = 39
         else:
             pass
@@ -160,18 +168,15 @@ class assignmentTwoAI:
     def communityChestCard(self):
         drawCard = random.random()
         if drawCard <= 0.0626:
+            self.boardLocationVisitedCount[self.currentPosition] += 1
             # print('Chance card: Go to Go')
             self.currentPosition = 0
         elif drawCard <= 0.125:
+            self.boardLocationVisitedCount[self.currentPosition] += 1
             # print('Chance card: Go to Jail')
             self.currentPosition = 10
         else:
             pass
-
-
-
-
-
 
 startExp = assignmentTwoAI()
 startExp.runProgram()

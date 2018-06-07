@@ -15,67 +15,70 @@ class NaiveBayes:
                                  'effective':0.0, 'enjoyable':0.0, 'great':0.0, 'hilarious':0.0}
         self.conditionalProbabiltiesNegative = {'awful':0.0, 'bad':0.0, 'boring':0.0, 'dull':0.0,
                                  'effective':0.0, 'enjoyable':0.0, 'great':0.0, 'hilarious':0.0}
+        self.crossValidationSets = [99,199,299,399,499, 599, 699, 799, 899, 999]
+
     def parseInputFile(self):
-        positiveFiles = [f for f in listdir('C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\positive')
-                     if isfile(join('C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\positive', f))]
-        negativeFiles = [f for f in listdir('C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\negative')
-                     if isfile(join('C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\negative', f))]
-        for file in negativeFiles:
-            dictionaryWordCurrent = ['awful', 'bad', 'boring', 'dull',
-                               'effective', 'enjoyable', 'great', 'hilarious']
-            location = 'C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\negative\\' + file
-            readFile = open(location, 'r')
-            fileWords = re.findall(r"[\w]+", readFile.read())
-            for i in range(0, len(fileWords)):
-                for word in dictionaryWordCurrent:
-                    if fileWords[i].lower() == word:
-                        self.dicWordCounts[word] += 1
-                        dictionaryWordCurrent.remove(word)
-        print('Negative Reviews')
-        print(self.dicWordCounts)
-        for word in self.dicWordCounts:
-            probability = (self.dicWordCounts[word] + 1)/1002
-            self.conditionalProbabiltiesNegative[word] = probability
-        print(self.conditionalProbabiltiesNegative)
+        for validationSet in range(0,10):
+            validationFileNamesNeg = []
+            validationFileNamesPos = []
+            positiveFiles = [f for f in listdir('C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\positive')
+                         if isfile(join('C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\positive', f))]
+            negativeFiles = [f for f in listdir('C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\negative')
+                         if isfile(join('C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\negative', f))]
+            for file in negativeFiles:
+                if str(file[2:3]) == str(validationSet):
+                    validationFileNamesNeg.append(file)
+                else:
+                    dictionaryWordCurrent = ['awful', 'bad', 'boring', 'dull',
+                                       'effective', 'enjoyable', 'great', 'hilarious']
+                    location = 'C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\negative\\' + file
+                    readFile = open(location, 'r')
+                    fileWords = re.findall(r"[\w]+", readFile.read())
+                    for i in range(0, len(fileWords)):
+                        for word in dictionaryWordCurrent:
+                            if fileWords[i].lower() == word:
+                                self.dicWordCounts[word] += 1
+                                dictionaryWordCurrent.remove(word)
+            for word in self.dicWordCounts:
+                probability = (self.dicWordCounts[word] + 1)/1002
+                self.conditionalProbabiltiesNegative[word] = probability
 
 
-        self.wordCount = 0
-        self.dicWordCounts = {'awful':0, 'bad':0, 'boring':0, 'dull':0,
-                                 'effective':0, 'enjoyable':0, 'great':0, 'hilarious':0}
-        for file in positiveFiles:
-            location = 'C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\positive\\' + file
-            readFile = open(location, 'r')
-            fileWords = re.findall(r"[\w]+", readFile.read())
-            dictionaryWordCurrent = ['awful', 'bad', 'boring', 'dull',
-                                     'effective', 'enjoyable', 'great', 'hilarious']
-            for i in range(0, len(fileWords)):
-                for word in dictionaryWordCurrent:
-                    if fileWords[i].lower() == word:
-                        self.dicWordCounts[word] += 1
-                        dictionaryWordCurrent.remove(word)
-        print('Positive Words')
-        print(self.dicWordCounts)
-        for word in self.dicWordCounts:
-            probability = (self.dicWordCounts[word] +1) / 1002
-            self.conditionalProbabiltiesPostive[word] = probability
-        print(self.conditionalProbabiltiesPostive)
+            self.wordCount = 0
+            self.dicWordCounts = {'awful':0, 'bad':0, 'boring':0, 'dull':0,
+                                     'effective':0, 'enjoyable':0, 'great':0, 'hilarious':0}
+            for file in positiveFiles:
+                if str(file[2:3]) == str(validationSet):
+                    validationFileNamesPos.append(file)
+                else:
+                    location = 'C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\positive\\' + file
+                    readFile = open(location, 'r')
+                    fileWords = re.findall(r"[\w]+", readFile.read())
+                    dictionaryWordCurrent = ['awful', 'bad', 'boring', 'dull',
+                                             'effective', 'enjoyable', 'great', 'hilarious']
+                    for i in range(0, len(fileWords)):
+                        for word in dictionaryWordCurrent:
+                            if fileWords[i].lower() == word:
+                                self.dicWordCounts[word] += 1
+                                dictionaryWordCurrent.remove(word)
+            for word in self.dicWordCounts:
+                probability = (self.dicWordCounts[word] +1) / 1002
+                self.conditionalProbabiltiesPostive[word] = probability
+
+
+            self.testPredict(validationFileNamesNeg, validationFileNamesPos, validationSet)
 
 
     def startNaiveBayes(self):
         self.parseInputFile()
-        self.testPredict()
 
-    def testPredict(self):
-        positiveFiles = [f for f in listdir('C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\positive')
-                         if isfile(join('C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\positive', f))]
-        negativeFiles = [f for f in listdir('C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\negative')
-                         if isfile(join('C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\negative', f))]
+
+    def testPredict(self,validationFileNamesNeg,  validationFileNamesPos, iter):
         probNegative = math.log(0.5)
         probPositive = math.log(0.5)
         predictedNegativeCount = 0
-        predictedPositiveCount = 0
-        count = 0
-        for file in negativeFiles:
+        predictedPositiveeCount = 0
+        for file in validationFileNamesNeg:
                 location = 'C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\negative\\' + file
                 readFile = open(location, 'r')
                 fileWords = re.findall(r"[\w]+", readFile.read())
@@ -94,14 +97,13 @@ class NaiveBayes:
                         probPositive += math.log(self.conditionalProbabiltiesPostive[m])
                     else:
                         probPositive += math.log(1 - self.conditionalProbabiltiesPostive[m])
+
                 if probNegative > probPositive:
                     predictedNegativeCount +=1
         print('Predicted ', predictedNegativeCount, ' files were negative when 1000 were actually negative')
-
-
         probNegative = math.log(0.5)
         probPositive = math.log(0.5)
-        for file in positiveFiles:
+        for file in validationFileNamesPos:
             location = 'C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\positive\\' + file
             readFile = open(location, 'r')
             fileWords = re.findall(r"[\w]+", readFile.read())
@@ -121,7 +123,9 @@ class NaiveBayes:
                 else:
                     probPositive += math.log(1 - self.conditionalProbabiltiesPostive[m])
             if probPositive > probNegative:
-                predictedPositiveCount += 1
-        print('Predicted ', predictedPositiveCount, ' files were positive when 1000 were actually positive')
+                predictedPositiveeCount += 1
+        print('Iteration: ', iter)
+        print('Predicted ', predictedPositiveeCount, ' files were positive when 1000 were actually positive')
+        print('')
 startBayes = NaiveBayes()
 startBayes.startNaiveBayes()
