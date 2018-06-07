@@ -2,6 +2,7 @@ from os import listdir
 from os.path import isfile, join
 import re
 import math
+import random
 class NaiveBayes:
 
     def __init__(self):
@@ -63,6 +64,7 @@ class NaiveBayes:
 
     def startNaiveBayes(self):
         self.parseInputFile()
+        self.generateReviewFromModel()
         self.testPredict()
 
     def testPredict(self):
@@ -123,5 +125,37 @@ class NaiveBayes:
             if probPositive > probNegative:
                 predictedPositiveCount += 1
         print('Predicted ', predictedPositiveCount, ' files were positive when 1000 were actually positive')
+
+    def generateReviewFromModel(self):
+        # generate 5 negative reviews
+        for i in range(0,5):
+            currentReview = ''
+            for index, word in enumerate(self.conditionalProbabiltiesNegative):
+                ranNum = random.random()
+                wordProb = self.conditionalProbabiltiesNegative[word]
+                wordNoPresProb = 1 - wordProb
+                # print(word, wordProb, wordNoPresProb, ranNum)
+                if wordProb > ranNum:
+                    currentReview += word + ' '
+                elif wordNoPresProb < ranNum:
+                    currentReview += word + ' '
+            print('Negative Review ', i)
+            print(currentReview)
+            print('')
+        for i in range(0,5):
+            currentReview = ''
+            for index, word in enumerate(self.conditionalProbabiltiesPostive):
+                ranNum = random.random()
+                wordProb = self.conditionalProbabiltiesPostive[word]
+                wordNoPresProb = 1 - wordProb
+                # print(word, wordProb, wordNoPresProb, ranNum)
+                if wordProb > ranNum:
+                    currentReview += word + ' '
+                elif wordNoPresProb < ranNum:
+                    currentReview += word + ' '
+            print('Positive Review ', i)
+            print(currentReview)
+            print('')
+
 startBayes = NaiveBayes()
 startBayes.startNaiveBayes()
