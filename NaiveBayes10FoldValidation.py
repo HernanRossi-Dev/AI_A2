@@ -74,35 +74,39 @@ class NaiveBayes:
 
 
     def testPredict(self,validationFileNamesNeg,  validationFileNamesPos, iter):
-        probNegative = math.log(0.5)
-        probPositive = math.log(0.5)
+        probNegative = 0
+        probPositive = 0
         predictedNegativeCount = 0
         predictedPositiveeCount = 0
         for file in validationFileNamesNeg:
-                location = 'C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\negative\\' + file
-                readFile = open(location, 'r')
-                fileWords = re.findall(r"[\w]+", readFile.read())
-                featureVector = [0,0,0,0,0,0,0,0]
-                for i in range(0, len(fileWords)):
-                    for j in range(0, 8):
-                        if fileWords[i].lower() == self.dictionaryWords[j]:
-                            featureVector[j] = 1
-                for (n,m) in enumerate(self.conditionalProbabiltiesNegative):
-                    if featureVector[n] == 1:
-                        probNegative += math.log(self.conditionalProbabiltiesNegative[m])
+            location = 'C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\negative\\' + file
+            readFile = open(location, 'r')
+            fileWords = re.findall(r"[\w]+", readFile.read())
+            featureVector = [0,0,0,0,0,0,0,0]
+            for i in range(0, len(fileWords)):
+                for j in range(0, 8):
+                    if fileWords[i].lower() == self.dictionaryWords[j]:
+                        featureVector[j] = 1
+            for (n, m) in enumerate(self.conditionalProbabiltiesNegative):
+                    if probNegative == 0:
+                        probNegative = (self.conditionalProbabiltiesNegative[m] ** featureVector[n]) * (
+                                (1 - self.conditionalProbabiltiesNegative[m]) ** (1 - featureVector[n]))
                     else:
-                        probNegative += math.log(1-self.conditionalProbabiltiesNegative[m])
-                for (n,m) in enumerate(self.conditionalProbabiltiesPostive):
-                    if featureVector[n] == 1:
-                        probPositive += math.log(self.conditionalProbabiltiesPostive[m])
+                        probNegative *= (self.conditionalProbabiltiesNegative[m]**featureVector[n] ) * (
+                            (1 -self.conditionalProbabiltiesNegative[m])**(1-featureVector[n]) )
+            for (n,m) in enumerate(self.conditionalProbabiltiesPostive):
+                    if probPositive == 0:
+                        probPositive = (self.conditionalProbabiltiesNegative[m] ** featureVector[n]) * (
+                                (1 - self.conditionalProbabiltiesNegative[m]) ** (1 - featureVector[n]))
                     else:
-                        probPositive += math.log(1 - self.conditionalProbabiltiesPostive[m])
+                        probPositive *= (self.conditionalProbabiltiesPostive[m]**featureVector[n] ) * (
+                            (1 -self.conditionalProbabiltiesPostive[m])**(1-featureVector[n]) )
 
-                if probNegative > probPositive:
+            if probNegative > probPositive:
                     predictedNegativeCount +=1
         print('Predicted ', predictedNegativeCount, ' files were negative when 1000 were actually negative')
-        probNegative = math.log(0.5)
-        probPositive = math.log(0.5)
+        probNegative = 0
+        probPositive = 0
         for file in validationFileNamesPos:
             location = 'C:\\Users\\herna\\PycharmProjects\\A2\\reviewFiles\\positive\\' + file
             readFile = open(location, 'r')
@@ -113,15 +117,19 @@ class NaiveBayes:
                     if fileWords[i].lower() == self.dictionaryWords[j]:
                         featureVector[j] = 1
             for (n, m) in enumerate(self.conditionalProbabiltiesNegative):
-                if featureVector[n] == 1:
-                    probNegative += math.log(self.conditionalProbabiltiesNegative[m])
+                if probNegative == 0:
+                    probNegative = (self.conditionalProbabiltiesNegative[m] ** featureVector[n]) * (
+                            (1 - self.conditionalProbabiltiesNegative[m]) ** (1 - featureVector[n]))
                 else:
-                    probNegative += math.log(1 - self.conditionalProbabiltiesNegative[m])
+                    probNegative *= (self.conditionalProbabiltiesNegative[m] ** featureVector[n]) * (
+                            (1 - self.conditionalProbabiltiesNegative[m]) ** (1 - featureVector[n]))
             for (n, m) in enumerate(self.conditionalProbabiltiesPostive):
-                if featureVector[n] == 1:
-                    probPositive += math.log(self.conditionalProbabiltiesPostive[m])
+                if probPositive == 0:
+                    probPositive = (self.conditionalProbabiltiesNegative[m] ** featureVector[n]) * (
+                            (1 - self.conditionalProbabiltiesNegative[m]) ** (1 - featureVector[n]))
                 else:
-                    probPositive += math.log(1 - self.conditionalProbabiltiesPostive[m])
+                    probPositive *= (self.conditionalProbabiltiesPostive[m] ** featureVector[n]) * (
+                            (1 - self.conditionalProbabiltiesPostive[m]) ** (1 - featureVector[n]))
             if probPositive > probNegative:
                 predictedPositiveeCount += 1
         print('Iteration: ', iter)
